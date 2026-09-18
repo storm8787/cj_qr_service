@@ -2,6 +2,9 @@ name: 검증
 
 on:
   pull_request:
+  # main 이 항상 검증된 상태로 유지되도록 병합 후에도 한 번 더 돌린다.
+  push:
+    branches: [main]
   workflow_dispatch:
 
 permissions:
