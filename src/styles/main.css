@@ -490,6 +490,15 @@ a.item-link:has(.btn-label) {
   color: var(--c-muted);
 }
 
+/* 민원 상세의 서식 내려받기 줄 */
+.form-download-row {
+  margin-top: 8px;
+}
+
+.form-download-row .btn {
+  width: 100%;
+}
+
 .chip-row {
   display: flex;
   flex-wrap: wrap;

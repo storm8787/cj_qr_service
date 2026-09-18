@@ -7,7 +7,7 @@
  *
  * `approved` 항목에 출처 URL이나 최종 확인일이 빠져 있으면 빌드를 실패시킨다.
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync, statSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -187,6 +187,80 @@ function validateOffices() {
   }
 }
 
+/**
+ * 민원서식 검증.
+ * 별지서식은 법령의 일부이므로 근거 법령·별지 번호·개정일이 곧 출처다.
+ * approved 서식은 이 셋과 실제 파일이 모두 있어야 한다.
+ */
+function validateForms(minwonIds) {
+  const data = readJson('src/data/forms.json');
+  const ids = new Set();
+
+  for (const form of data.items) {
+    const where = `서식 "${form.id ?? '(id 없음)'}"`;
+
+    if (!isNonEmptyString(form.id)) fail(where, 'id 가 없습니다.');
+    else if (ids.has(form.id)) fail(where, 'id 가 중복됩니다.');
+    else ids.add(form.id);
+
+    for (const field of ['title', 'summary', 'file']) {
+      if (!isNonEmptyString(form[field])) fail(where, `${field} 가 비어 있습니다.`);
+    }
+    for (const field of ['sections', 'notices', 'feeExemptions', 'relatedMinwonIds']) {
+      if (!Array.isArray(form[field])) fail(where, `${field} 가 배열이 아닙니다.`);
+    }
+    if (!REVIEW_STATUSES.has(form.reviewStatus)) {
+      fail(where, `reviewStatus 값이 올바르지 않습니다: ${form.reviewStatus}`);
+    }
+
+    // 연결된 민원이 실제로 존재해야 한다.
+    for (const minwonId of form.relatedMinwonIds ?? []) {
+      if (!minwonIds.has(minwonId)) {
+        fail(where, `relatedMinwonIds 의 "${minwonId}" 민원이 존재하지 않습니다.`);
+      }
+    }
+
+    // 서식 파일이 실제로 있어야 하고, 크기가 기록과 맞아야 한다.
+    if (isNonEmptyString(form.file)) {
+      if (!form.file.endsWith('.hwpx')) fail(where, 'file 은 .hwpx 여야 합니다.');
+      const filePath = resolve(projectRoot, 'public', form.file);
+      if (!existsSync(filePath)) {
+        fail(where, `서식 파일이 없습니다: public/${form.file}`);
+      } else {
+        const actual = statSync(filePath).size;
+        if (form.fileSizeBytes !== actual) {
+          fail(where, `fileSizeBytes(${form.fileSizeBytes}) 가 실제 파일 크기(${actual}) 와 다릅니다.`);
+        }
+      }
+    }
+
+    checkForbidden(where, JSON.stringify(form));
+
+    if (form.reviewStatus === 'approved') {
+      for (const field of ['law', 'formNumber', 'lawUrl']) {
+        if (!isNonEmptyString(form[field])) {
+          fail(where, `approved 서식에 ${field} 가 없습니다. 별지서식은 근거 법령이 곧 출처입니다.`);
+        }
+      }
+      if (!DATE.test(form.revisedAt ?? '')) {
+        fail(where, 'approved 서식에 개정일(revisedAt, YYYY-MM-DD)이 없습니다.');
+      }
+      if (!DATE.test(form.verifiedAt ?? '')) {
+        fail(where, 'approved 서식에 최종 확인일(verifiedAt)이 없습니다.');
+      }
+      if (isNonEmptyString(form.lawUrl) && !form.lawUrl.startsWith('https://')) {
+        fail(where, `lawUrl 은 https 여야 합니다: ${form.lawUrl}`);
+      }
+      if ((form.sections ?? []).length === 0) {
+        fail(where, 'approved 서식에 기재 항목(sections)이 없습니다.');
+      }
+    } else {
+      warn(where, `reviewStatus=${form.reviewStatus} — 공식 배포본에서 제외됩니다.`);
+    }
+  }
+  return data.items.length;
+}
+
 function validateLinks() {
   const data = readJson('src/data/official-links.json');
   for (const link of data.items) {
@@ -203,6 +277,10 @@ const summary = validateMinwon();
 validateTerms();
 validateOffices();
 validateLinks();
+const minwonIds = new Set(
+  readJson('src/data/minwon-items.json').items.map((item) => item.id),
+);
+const formCount = validateForms(minwonIds);
 
 if (strict && summary.approvedCount === 0) {
   fail('공식 배포', 'approved 상태의 민원이 한 건도 없습니다. 공식 배포본이 비어 있게 됩니다.');
@@ -213,7 +291,7 @@ for (const line of errors) console.error(line);
 
 console.log(
   `콘텐츠 검증 ${errors.length === 0 ? '통과' : '실패'} — ` +
-    `민원 ${summary.total}건 중 approved ${summary.approvedCount}건` +
+    `민원 ${summary.total}건 중 approved ${summary.approvedCount}건, 서식 ${formCount}건` +
     `${strict ? ' (strict 모드)' : ''}`,
 );
 

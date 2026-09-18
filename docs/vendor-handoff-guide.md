@@ -16,8 +16,10 @@ dist/
 ├── assets/
 │   ├── index-<해시>.js
 │   └── style-<해시>.css
-└── data/
-    └── address-index.json
+├── data/
+│   └── address-index.json
+└── forms/
+    └── *.hwpx          (민원서식 파일)
 README-업로드안내.txt
 ```
 
@@ -46,6 +48,11 @@ README-업로드안내.txt
 | `.json` | `application/json; charset=utf-8` |
 | `.svg` | `image/svg+xml` |
 | `.txt` | `text/plain; charset=utf-8` |
+| `.hwpx` | `application/vnd.hancom.hwpx` |
+
+`.hwpx` 는 민원서식 파일입니다(`forms/` 폴더). MIME 타입이 없으면 브라우저가 파일을 열려고 시도해
+깨진 화면이 뜰 수 있으니 반드시 설정해 주세요. 설정이 어려우면 `application/octet-stream` 으로 두어도
+내려받기는 동작합니다.
 
 자바스크립트는 `<script type="module">` 로 불러옵니다. `.js` 의 MIME 타입이 틀리면 화면이 뜨지 않습니다.
 
@@ -56,6 +63,7 @@ README-업로드안내.txt
 | `assets/` 아래 파일 | `Cache-Control: public, max-age=31536000, immutable` (파일명에 해시가 있음) |
 | `index.html` | `Cache-Control: no-cache` |
 | `data/address-index.json` | `Cache-Control: no-cache` 또는 짧은 max-age |
+| `forms/*.hwpx` | `Cache-Control: public, max-age=86400` (서식 개정 시 교체) |
 | `robots.txt` | 짧은 max-age |
 
 민원 내용이 갱신되면 `index.html` 과 `data/` 는 즉시 새 파일을 받아야 하므로 장기 캐시를 걸지 마세요.
@@ -86,6 +94,7 @@ Referrer-Policy: strict-origin-when-cross-origin
 - [ ] 첫 화면에서 민원 검색이 동작한다
 - [ ] 민원을 눌렀을 때 상세 화면이 열린다
 - [ ] 주소·지번 검색에서 결과가 나온다 (주소 데이터가 로드됨)
+- [ ] 민원서식 화면에서 서식 파일(.hwpx)이 내려받아진다
 - [ ] 면적 환산이 계산된다
 - [ ] 브라우저 개발자도구 → 네트워크 탭에 **외부 도메인 요청이 없다**
 - [ ] 브라우저 개발자도구 → 콘솔에 오류가 없다

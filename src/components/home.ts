@@ -75,6 +75,10 @@ export function renderHome(items: readonly MinwonItem[], dataset: MinwonDataset)
           '민원실 이용안내',
           el('span', { class: 'tile-desc' }, ['위치 · 운영시간 · 문의처']),
         ]),
+        el('a', { class: 'tile', href: routeToHash({ name: 'forms' }) }, [
+          '민원서식 안내',
+          el('span', { class: 'tile-desc' }, ['기재 항목 · 서식 내려받기']),
+        ]),
         el('a', { class: 'tile', href: routeToHash({ name: 'terms', query: '' }) }, [
           '행정용어 찾기',
           el('span', { class: 'tile-desc' }, ['어려운 말 쉽게 보기']),

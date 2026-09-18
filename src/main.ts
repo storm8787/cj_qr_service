@@ -2,6 +2,7 @@ import './styles/main.css';
 
 import { renderAddress } from './components/address.ts';
 import { renderArea } from './components/area.ts';
+import { renderFormDetail, renderForms } from './components/forms.ts';
 import { renderHome } from './components/home.ts';
 import { devBanner, siteFooter, siteHeader } from './components/layout.ts';
 import { renderCategory, renderDetail, renderSearch } from './components/minwon.ts';
@@ -45,6 +46,10 @@ function viewFor(route: Route): HTMLElement {
       return renderDetail(items, dataset, route.id);
     case 'terms':
       return renderTerms(route.query);
+    case 'forms':
+      return renderForms();
+    case 'form':
+      return renderFormDetail(route.id, items);
     case 'address':
       return renderAddress();
     case 'area':

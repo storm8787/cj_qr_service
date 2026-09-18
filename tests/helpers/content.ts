@@ -4,7 +4,7 @@ import type { MinwonDataset, MinwonItem, OfficeItem, TermItem } from '../../src/
 
 const root = resolve(import.meta.dirname, '../..');
 
-function readJson<T>(relativePath: string): T {
+export function readJson<T>(relativePath: string): T {
   return JSON.parse(readFileSync(resolve(root, relativePath), 'utf8')) as T;
 }
 

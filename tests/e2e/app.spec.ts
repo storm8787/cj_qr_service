@@ -11,6 +11,8 @@ const ROUTES = [
   { hash: '#/search?q=%EB%93%B1%EB%B3%B8', name: '민원 검색 결과' },
   { hash: '#/minwon/resident-registration-copy', name: '민원 상세' },
   { hash: '#/terms', name: '행정용어' },
+  { hash: '#/forms', name: '민원서식 목록' },
+  { hash: '#/forms/jumin-deungchobon-gyobu', name: '민원서식 상세' },
   { hash: '#/address', name: '주소 검색' },
   { hash: '#/area', name: '면적 환산' },
   { hash: '#/office', name: '민원실 안내' },
@@ -156,6 +158,60 @@ test.describe('민원 상세 표기', () => {
     await page.goto('./#/minwon/resident-registration-copy');
     await expect(page.getByText('콘텐츠 최종 확인일')).toBeVisible();
     await expect(page.getByText('2026-09-18').first()).toBeVisible();
+  });
+});
+
+test.describe('민원서식', () => {
+  test('처음 화면에서 민원서식으로 갈 수 있다', async ({ page }) => {
+    await page.goto('./');
+    await page.getByRole('link', { name: /민원서식 안내/ }).click();
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('민원서식 안내');
+    await expect(page.locator('.card-list .item-link')).toHaveCount(4);
+  });
+
+  test('서식 상세에 기재 항목과 근거 법령이 나온다', async ({ page }) => {
+    await page.goto('./#/forms/jijeok-budongsan-yeollam-balgeup');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('지적공부');
+    await expect(page.getByText('별지 제71호서식').first()).toBeVisible();
+    await expect(page.getByRole('heading', { name: '무엇을 적나요' })).toBeVisible();
+    await expect(page.getByText(/공간정보의 구축 및 관리 등에 관한 법률 시행규칙/).first()).toBeVisible();
+  });
+
+  test('HWPX 파일을 내려받을 수 있다', async ({ page }) => {
+    await page.goto('./#/forms/jeonip-singo');
+    const [download] = await Promise.all([
+      page.waitForEvent('download'),
+      page.locator('a[download]').first().click(),
+    ]);
+    expect(download.suggestedFilename()).toBe('jeonip-singoseo.hwpx');
+  });
+
+  test('서식 파일이 올바른 MIME 타입으로 전달된다', async ({ request }) => {
+    const response = await request.get('./forms/jeonip-singoseo.hwpx');
+    expect(response.status()).toBe(200);
+    expect(response.headers()['content-type']).toContain('hwpx');
+  });
+
+  test('민원 상세에 관련 서식이 붙는다', async ({ page }) => {
+    await page.goto('./#/minwon/household-move-in-confirmation');
+    await expect(page.getByRole('heading', { name: '민원서식' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { name: /전입세대확인서 열람 또는 교부 신청서/ }),
+    ).toBeVisible();
+  });
+
+  test('서식에서 확인한 법정 수수료가 민원 상세에 표시된다', async ({ page }) => {
+    await page.goto('./#/minwon/land-register-copy');
+    const fee = page.locator('dt', { hasText: '수수료' }).first().locator('+ dd');
+    await expect(fee).toContainText('500원');
+    await expect(fee).toContainText('별지 제71호서식');
+    // 확인된 값이므로 "확인 필요" 문구가 붙지 않아야 한다.
+    await expect(fee.locator('.pending-value')).toHaveCount(0);
+  });
+
+  test('없는 서식 주소는 안내를 보여 준다', async ({ page }) => {
+    await page.goto('./#/forms/does-not-exist');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText('서식을 찾을 수 없습니다');
   });
 });
 
