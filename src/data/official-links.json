@@ -1,0 +1,25 @@
+{
+  "items": [
+    {
+      "id": "gov24",
+      "label": "정부24",
+      "organization": "행정안전부 정부24",
+      "url": "https://www.gov.kr/",
+      "description": "민원 안내·신청·발급을 한곳에서 처리하는 정부 통합 민원 포털입니다."
+    },
+    {
+      "id": "juso",
+      "label": "도로명주소 안내",
+      "organization": "행정안전부 도로명주소 안내시스템",
+      "url": "https://www.juso.go.kr/",
+      "description": "도로명주소와 지번주소를 확인할 수 있는 공식 사이트입니다."
+    },
+    {
+      "id": "chungju-city",
+      "label": "충주시 공식 홈페이지",
+      "organization": "충주시",
+      "url": "https://www.chungju.go.kr/",
+      "description": "충주시 부서 안내, 공지사항, 시정 정보를 확인할 수 있습니다."
+    }
+  ]
+}

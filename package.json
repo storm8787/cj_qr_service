@@ -1,0 +1,32 @@
+{
+  "name": "chungju-minwon-guide",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "충주시 모바일 민원안내 서비스 (가칭) — 정적 배포용 웹서비스",
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:address-index": "node scripts/build-address-index.mjs",
+    "dev": "npm run build:address-index && vite",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "build:preview": "npm run build:address-index && node scripts/validate-content.mjs && vite build --mode preview",
+    "build:official": "npm run build:address-index && node scripts/validate-content.mjs --strict && vite build --mode official && node scripts/verify-official-build.mjs",
+    "package:official": "npm run build:official && node scripts/package-official.mjs",
+    "check": "npm run typecheck && npm run test && npm run build:preview && npm run build:official",
+    "preview:serve": "vite preview --outDir dist-preview"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.3",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0",
+    "vitest": "^5.0.1"
+  }
+}

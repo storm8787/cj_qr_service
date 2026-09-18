@@ -1,0 +1,116 @@
+{
+  "notice": "행정용어 설명은 공식 근거를 확인한 것만 싣습니다. 근거를 확인하지 못한 용어는 설명 대신 '담당부서 확인 필요'로 표시합니다.",
+  "updatedAt": "2026-09-18",
+  "items": [
+    {
+      "id": "deungbon-chobon",
+      "term": "등본과 초본",
+      "aliases": ["등본", "초본", "등초본"],
+      "description": "주민등록표 등본은 같은 세대에 속한 사람들의 사항이 함께 기재된 서류이고, 초본은 신청인 개인의 주민등록 사항이 기재된 서류입니다. 어느 서류가 필요한지는 제출받는 곳에서 확인해 주세요.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "jeonip-sedae",
+      "term": "전입세대확인서",
+      "aliases": ["전입세대열람원", "전입세대열람"],
+      "description": "해당 주소에 전입신고된 세대주와 전입일자를 확인해 주는 서류입니다. 정부24 민원안내에서 신청방법이 '방문'으로 안내되므로, 온라인 발급이 가능하다고 안내하지 않습니다.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000305",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "jimok",
+      "term": "지목",
+      "aliases": ["땅 용도", "지목 종류"],
+      "description": "토지의 주된 용도에 따라 구분하여 토지대장에 등록하는 구분입니다. 구체적인 지목의 종류와 정의는 공간정보 관련 법령에 정해져 있으므로, 개별 토지의 지목은 토지대장에서 확인해 주세요.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000026",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "toji-deunggeup",
+      "term": "토지등급",
+      "aliases": ["등급"],
+      "description": "",
+      "pendingReason": "토지대장에 표시되는 '토지등급' 항목의 현행 의미와 효력에 대해 공식 근거를 확인하지 못했습니다. 숫자가 작을수록 비싸다는 식의 설명은 근거가 확인되지 않아 싣지 않습니다. 충주시 지적 담당 부서 확인 후 정확한 표현으로 작성해야 합니다.",
+      "sourceUrl": "",
+      "verifiedAt": "",
+      "reviewStatus": "review-needed"
+    },
+    {
+      "id": "chukcheok",
+      "term": "축척",
+      "aliases": ["도면 축척"],
+      "description": "실제 거리를 도면에 줄여서 표시한 비율입니다. 1/1200은 도면의 1cm가 실제 12m에 해당합니다. 지적도에 적용된 축척은 도면에 표시되어 있습니다.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000027",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "yeonmyeonjeok",
+      "term": "연면적",
+      "aliases": ["전체 면적"],
+      "description": "건축물 각 층 바닥면적의 합계입니다. 건축물대장에 기재되어 있습니다.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=15000000098",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "geonpyeyul",
+      "term": "건폐율",
+      "aliases": ["건폐"],
+      "description": "",
+      "pendingReason": "건폐율·용적률의 지역별 허용 범위는 충주시 조례로 정해집니다. 조례 내용을 확인하지 못했으므로 수치를 예시로 들지 않습니다. 충주시 도시계획 담당 부서 확인이 필요합니다.",
+      "sourceUrl": "",
+      "verifiedAt": "",
+      "reviewStatus": "review-needed"
+    },
+    {
+      "id": "yongdo-jiyeok",
+      "term": "용도지역",
+      "aliases": ["용도"],
+      "description": "",
+      "pendingReason": "용도지역별로 지을 수 있는 건축물과 제한 사항은 법령과 충주시 조례에 따라 달라집니다. 임의 요약이 오해를 부를 수 있어 설명을 싣지 않고, 토지이용계획확인서와 담당 부서 상담을 안내합니다.",
+      "sourceUrl": "",
+      "verifiedAt": "",
+      "reviewStatus": "review-needed"
+    },
+    {
+      "id": "wiimjang",
+      "term": "위임장",
+      "aliases": ["대리 신청"],
+      "description": "본인을 대신해 다른 사람이 서류를 신청·수령할 수 있도록 맡기는 문서입니다. 민원별로 위임 가능 범위와 함께 제출할 서류가 다르므로 각 민원의 공식 안내에서 확인해 주세요.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000015",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "jibeon",
+      "term": "지번",
+      "aliases": ["번지"],
+      "description": "필지마다 붙는 번호입니다. 본번과 부번으로 나뉘며 '123-4'처럼 표기합니다. 임야는 앞에 '산'을 붙입니다.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000026",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    },
+    {
+      "id": "pyeong",
+      "term": "평",
+      "aliases": ["평수"],
+      "description": "법정 계량단위는 제곱미터(㎡)이고, 평은 관습적으로 쓰이는 단위입니다. 이 서비스의 면적 환산은 1평 = 3.305785㎡를 적용합니다.",
+      "pendingReason": "",
+      "sourceUrl": "https://www.gov.kr/mw/AA020InfoCappView.do?CappBizCD=13100000026",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    }
+  ]
+}
