@@ -208,8 +208,11 @@ E2E 테스트가 다루는 것 (360 / 768 / 1280px 세 화면폭):
 
 ## GitHub Pages 미리보기 배포방법
 
-1. 저장소 **Settings → Pages → Source** 를 `GitHub Actions` 로 설정합니다.
-2. `main` 브랜치에 푸시하면 `.github/workflows/preview.yml` 이 실행됩니다.
+1. 저장소 **Settings → Pages → Build and deployment → Source** 를 `GitHub Actions` 로 설정합니다.
+2. **Actions** 탭에서 `개발·검토용 미리보기 배포` → **Run workflow** 로 첫 배포를 실행합니다.
+3. 이후 `main` 또는 `claude/**` 브랜치에 푸시하면 `.github/workflows/preview.yml` 이 자동 실행됩니다.
+
+자세한 절차와 주의사항은 [`docs/deployment-guide.md`](docs/deployment-guide.md) 를 참고하세요.
 
 미리보기 배포본에는 다음이 적용됩니다.
 

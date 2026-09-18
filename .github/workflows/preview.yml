@@ -5,7 +5,8 @@ name: 개발·검토용 미리보기 배포
 
 on:
   push:
-    branches: [main]
+    # 기본 브랜치가 main 이 아닐 수 있으므로 작업 브랜치도 함께 받는다.
+    branches: [main, 'claude/**']
   workflow_dispatch:
 
 permissions:

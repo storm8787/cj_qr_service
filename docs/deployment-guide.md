@@ -33,8 +33,24 @@ GitHub에서 개발
 3. `npm run build:preview`
 4. `dist-preview/` 를 GitHub Pages 에 배포
 
-저장소 설정에서 **Settings → Pages → Source 를 "GitHub Actions"** 로 바꾸면 워크플로가 동작합니다.
-Pages 공개는 저장소 관리자가 직접 설정해야 합니다.
+### 설정 절차 (저장소 관리자가 1회 수행)
+
+1. GitHub 저장소 → **Settings** 탭
+2. 왼쪽 메뉴 **Pages**
+3. **Build and deployment → Source** 를 `Deploy from a branch` 에서 **`GitHub Actions`** 로 변경
+   (저장 버튼 없이 즉시 적용됩니다)
+4. **Actions** 탭 → 왼쪽에서 `개발·검토용 미리보기 배포` 선택 → **Run workflow** 로 첫 배포 실행
+   (이후에는 워크플로가 받는 브랜치에 push 할 때마다 자동 실행됩니다)
+5. 완료되면 Settings → Pages 상단에 `https://<계정>.github.io/<저장소>/` 주소가 표시됩니다
+
+주의사항:
+
+- `workflow_dispatch`(수동 실행) 버튼은 워크플로 파일이 **기본 브랜치에 있을 때만** Actions 탭에 나타납니다.
+- 저장소가 비공개이면 GitHub Pages 공개에 요금제 제약이 있을 수 있습니다.
+  Settings → Pages 에서 안내되는 내용을 확인해 주세요.
+- Pages 환경에 배포 브랜치 제한(Settings → Environments → `github-pages` → Deployment branches)이
+  걸려 있으면, 배포하려는 브랜치를 허용 목록에 추가해야 합니다.
+- **이 주소는 검토용입니다.** 시민 배포용 QR을 이 주소로 만들지 마세요.
 
 미리보기 배포본은 `robots.txt` 로 전체 수집을 차단하고 `noindex, nofollow, noarchive` 메타를 넣습니다.
 
