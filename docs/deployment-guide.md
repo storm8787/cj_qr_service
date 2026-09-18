@@ -54,6 +54,78 @@ GitHub에서 개발
 
 미리보기 배포본은 `robots.txt` 로 전체 수집을 차단하고 `noindex, nofollow, noarchive` 메타를 넣습니다.
 
+## 2-1. Vercel · Netlify 미리보기 배포
+
+GitHub Pages 외에 Vercel 과 Netlify 에서도 같은 미리보기 빌드를 올릴 수 있습니다.
+**세 곳 모두 같은 `npm run build:preview` 산출물을 씁니다.** 플랫폼 전용 기능은 쓰지 않습니다.
+
+| 항목 | 값 |
+| --- | --- |
+| 빌드 명령 | `npm run build:preview` |
+| 출력(게시) 폴더 | `dist-preview` |
+| 설치 명령 | `npm ci` |
+| Node 버전 | 22 |
+
+### Vercel
+
+설정 파일: [`vercel.json`](../vercel.json)
+
+1. Vercel 에서 **Add New → Project** → 이 GitHub 저장소를 선택
+2. Framework Preset 은 **Other** 로 둡니다 (`vercel.json` 이 빌드 설정을 덮어씁니다)
+3. Deploy — 이후 push 할 때마다 자동 배포됩니다
+
+### Netlify (Git 연동)
+
+설정 파일: [`netlify.toml`](../netlify.toml)
+
+1. Netlify 에서 **Add new site → Import an existing project** → 이 GitHub 저장소를 선택
+2. 빌드 명령과 게시 폴더는 `netlify.toml` 에서 자동으로 읽힙니다
+3. Deploy — 이후 push 할 때마다 자동 배포됩니다
+
+### Netlify (드래그앤드롭)
+
+GitHub 연동 없이 폴더만 올리는 방법입니다.
+
+```bash
+npm run build:preview
+```
+
+생성된 **`dist-preview` 폴더를** [app.netlify.com/drop](https://app.netlify.com/drop) 에 끌어다 놓습니다.
+
+`netlify.toml` 은 저장소 루트에 있어 드래그앤드롭에는 적용되지 않으므로,
+빌드가 `dist-preview/_headers` 파일을 함께 만들어 폴더 안에 넣습니다.
+Netlify 는 이 파일을 읽어 수집 차단 헤더를 적용합니다.
+(`vite.config.ts` 의 `previewNoindexPlugin` 참고)
+
+### 미리보기 3곳에 공통으로 적용되는 것
+
+- 화면 상단 `개발·검토용 비공식 페이지` 배너
+- 문서 제목 `[개발·검토용] 충주시 민원안내`
+- `<meta name="robots" content="noindex, nofollow, noarchive">`
+- `robots.txt` 전체 수집 차단
+- `X-Robots-Tag: noindex, nofollow, noarchive` 응답 헤더 (Vercel·Netlify)
+
+**어느 주소로도 시민 배포용 QR을 만들지 마세요.**
+
+### 출력 폴더가 `dist` 가 아닌 이유
+
+외부 미리보기는 `dist-preview` 를 씁니다. `dist` 는 **공식 배포본 전용**입니다.
+
+미리보기 빌드에는 개발·검토용 배너와 `noindex` 가 들어 있어서, 그대로 충주시 공식 서버에 올리면
+요구사항(공식 배포본에서 개발용 배너 제거)에 어긋납니다. 두 산출물이 같은 폴더 이름을 쓰면
+섞여 올라갈 위험이 있어 분리했습니다.
+`scripts/verify-official-build.mjs` 가 `dist` 에 `_headers`·`noindex`·배너 문구가 있으면 빌드를 실패시킵니다.
+
+두 산출물은 **형식이 완전히 같습니다.** 둘 다 상대경로 기반 순수 정적 파일이고,
+플랫폼 전용 기능(Serverless Function, Edge Function, Forms, Image CDN, rewrite 규칙)을 쓰지 않습니다.
+따라서 `npm run package:official` 로 만든 `dist` 를 충주시 서버에 그대로 이관할 수 있습니다.
+
+### 저장소를 비공개로 두고 싶을 때
+
+Vercel·Netlify 는 비공개 저장소도 연결할 수 있고, 배포 주소에 비밀번호를 걸 수 있습니다
+(Netlify: Site settings → Access control → Password protection / Vercel: Deployment Protection).
+검토용 주소가 외부에 노출되면 곤란한 경우 이 설정을 함께 켜 주세요.
+
 ## 3. 공식 배포본 생성
 
 ```bash

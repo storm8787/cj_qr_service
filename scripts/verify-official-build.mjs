@@ -141,6 +141,19 @@ function checkUnapprovedContent() {
   notes.push(`미승인 콘텐츠 ${unapproved.length}건이 배포본에서 제외되었습니다.`);
 }
 
+/**
+ * 외부 미리보기 호스팅(Netlify 등) 전용 파일이 공식 배포본에 섞이지 않았는지 확인한다.
+ * 이 파일들에는 `noindex` 헤더가 들어 있어 공식 서버에 올라가면 안 된다.
+ */
+function checkPreviewOnlyFiles() {
+  const names = new Set(listFiles(distDir).map((f) => relative(distDir, f)));
+  for (const name of ['_headers', '_redirects']) {
+    if (names.has(name)) {
+      failures.push(`미리보기 전용 파일이 공식 배포본에 포함되어 있습니다: ${name}`);
+    }
+  }
+}
+
 function checkRobots() {
   const files = listFiles(distDir).map((f) => relative(distDir, f));
   if (files.includes('robots.txt')) {
@@ -163,6 +176,7 @@ function main() {
   for (const file of files) checkFile(file);
   checkIndexHtml();
   checkUnapprovedContent();
+  checkPreviewOnlyFiles();
   checkRobots();
 
   console.log(`공식 빌드 검증 대상: ${files.length}개 파일 (${relative(projectRoot, distDir)})`);

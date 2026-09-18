@@ -81,7 +81,9 @@ Node 20 이상이 필요합니다(개발 환경에만 필요, 운영 서버에�
 │   ├── content-review-checklist.md
 │   ├── deployment-guide.md
 │   └── vendor-handoff-guide.md
-└── .github/workflows/
+├── .github/workflows/
+├── vercel.json                   # Vercel 미리보기 배포 설정
+└── netlify.toml                  # Netlify 미리보기 배포 설정
 ```
 
 ## 콘텐츠 수정방법
@@ -213,6 +215,28 @@ E2E 테스트가 다루는 것 (360 / 768 / 1280px 세 화면폭):
 3. 이후 `main` 또는 `claude/**` 브랜치에 푸시하면 `.github/workflows/preview.yml` 이 자동 실행됩니다.
 
 자세한 절차와 주의사항은 [`docs/deployment-guide.md`](docs/deployment-guide.md) 를 참고하세요.
+
+## Vercel · Netlify 미리보기 배포방법
+
+GitHub Pages 외에 Vercel 과 Netlify 에도 같은 미리보기 빌드를 올릴 수 있습니다.
+설정 파일이 저장소에 들어 있어 별도 입력 없이 연결만 하면 됩니다.
+
+| 플랫폼 | 설정 파일 | 방법 |
+| --- | --- | --- |
+| Vercel | [`vercel.json`](vercel.json) | Add New → Project → 저장소 선택 → Deploy |
+| Netlify (Git) | [`netlify.toml`](netlify.toml) | Add new site → Import an existing project → 저장소 선택 |
+| Netlify (드래그앤드롭) | `dist-preview/_headers` (빌드 시 자동 생성) | `npm run build:preview` 후 `dist-preview` 폴더를 [app.netlify.com/drop](https://app.netlify.com/drop) 에 끌어다 놓기 |
+
+공통 설정: 빌드 명령 `npm run build:preview`, 게시 폴더 `dist-preview`, Node 22.
+
+세 곳 모두 개발·검토용 배너, `noindex` 메타, 수집 차단 `robots.txt`,
+`X-Robots-Tag: noindex` 응답 헤더가 적용됩니다.
+Serverless Function·Edge Function·rewrite 규칙 등 **플랫폼 전용 기능은 쓰지 않으므로**,
+공식 배포본(`dist`)을 충주시 서버로 그대로 이관하는 데 아무런 영향이 없습니다.
+
+> 미리보기는 `dist-preview`, 공식 배포본은 `dist` 로 폴더를 분리했습니다.
+> 미리보기 빌드에는 배너와 `noindex` 가 들어 있어 공식 서버에 올리면 안 되기 때문입니다.
+> 자세한 이유는 [`docs/deployment-guide.md`](docs/deployment-guide.md) 의 "출력 폴더가 `dist` 가 아닌 이유" 를 참고하세요.
 
 미리보기 배포본에는 다음이 적용됩니다.
 

@@ -100,12 +100,19 @@ function htmlChannelPlugin(channel: BuildChannel): Plugin {
 }
 
 /**
- * 개발·검토용 빌드에서는 `robots.txt`를 전체 수집 차단본으로 덮어쓴다.
- * (public/robots.txt 는 충주시 공식 서버용 원본이다.)
+ * 개발·검토용 빌드에만 넣는 수집 차단 파일.
+ *
+ * - `robots.txt` : public/robots.txt(공식 서버용)를 전체 수집 차단본으로 덮어쓴다.
+ * - `_headers`   : Netlify 가 **배포 폴더 안에서** 읽는 헤더 파일.
+ *   저장소 루트의 `netlify.toml` 은 Git 연동 배포에만 적용되므로,
+ *   `dist-preview` 폴더를 드래그앤드롭으로 올리는 경우를 위해 폴더 안에도 넣어 둔다.
+ *   (다른 호스팅이나 충주시 공식 서버에서는 그냥 무시되는 평범한 텍스트 파일이다.)
+ *
+ * 공식 빌드에는 둘 다 넣지 않는다.
  */
-function previewRobotsPlugin(channel: BuildChannel): Plugin {
+function previewNoindexPlugin(channel: BuildChannel): Plugin {
   return {
-    name: 'chungju-minwon-preview-robots',
+    name: 'chungju-minwon-preview-noindex',
     apply: 'build',
     generateBundle() {
       if (channel === 'official') return;
@@ -115,6 +122,17 @@ function previewRobotsPlugin(channel: BuildChannel): Plugin {
         source:
           '# 개발·검토용 미리보기입니다. 검색엔진 수집을 차단합니다.\n' +
           'User-agent: *\nDisallow: /\n',
+      });
+      this.emitFile({
+        type: 'asset',
+        fileName: '_headers',
+        source:
+          '# 개발·검토용 미리보기 전용 헤더 (Netlify 드래그앤드롭 배포용)\n' +
+          '/*\n' +
+          '  X-Robots-Tag: noindex, nofollow, noarchive\n' +
+          '  X-Content-Type-Options: nosniff\n' +
+          '  Referrer-Policy: strict-origin-when-cross-origin\n' +
+          "  Content-Security-Policy: frame-ancestors 'none'\n",
       });
     },
   };
@@ -130,7 +148,7 @@ export default defineConfig(({ mode }) => {
     define: {
       __BUILD_CHANNEL__: JSON.stringify(channel),
     },
-    plugins: [contentPlugin(channel), htmlChannelPlugin(channel), previewRobotsPlugin(channel)],
+    plugins: [contentPlugin(channel), htmlChannelPlugin(channel), previewNoindexPlugin(channel)],
     build: {
       outDir: isOfficial ? 'dist' : 'dist-preview',
       emptyOutDir: true,
