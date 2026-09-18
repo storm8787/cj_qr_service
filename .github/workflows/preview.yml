@@ -3,10 +3,13 @@ name: 개발·검토용 미리보기 배포
 # GitHub Pages 는 콘텐츠 검토용 미리보기입니다. 최종 운영 환경이 아닙니다.
 # 시민에게 배포할 QR을 이 주소로 만들지 마세요.
 
+# GitHub Pages 는 main 에서만 배포합니다.
+# 작업 브랜치별 미리보기는 Vercel·Netlify 를 쓰세요 (vercel.json / netlify.toml).
+# 여러 브랜치가 동시에 Pages 에 배포하면 concurrency 그룹에서 서로 취소되어
+# 어느 브랜치 내용이 올라가 있는지 알 수 없게 됩니다.
 on:
   push:
-    # 기본 브랜치가 main 이 아닐 수 있으므로 작업 브랜치도 함께 받는다.
-    branches: [main, 'claude/**']
+    branches: [main]
   workflow_dispatch:
 
 permissions:
@@ -23,9 +26,9 @@ jobs:
     name: 빌드 및 검증
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -48,14 +51,14 @@ jobs:
         run: node scripts/package-official.mjs
 
       - name: 전달용 ZIP 아티팩트 업로드
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: chungju-minwon-guide-official
           path: release/chungju-minwon-guide.zip
           retention-days: 30
 
       - name: Pages 아티팩트 업로드
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist-preview
 
@@ -68,4 +71,4 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - id: deployment
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
