@@ -1,0 +1,56 @@
+# Netlify — 개발·검토용 미리보기 배포 설정
+#
+# 이 파일은 Git 연동 배포에만 적용됩니다.
+# `dist-preview` 폴더를 드래그앤드롭으로 올리는 경우에는 폴더 안의 `_headers` 파일이 쓰입니다.
+# (`_headers` 는 빌드 시 자동 생성됩니다. vite.config.ts 의 previewNoindexPlugin 참고)
+#
+# Netlify 전용 기능(Functions, Edge Functions, Forms, Identity, Image CDN)은 쓰지 않습니다.
+# 산출물은 평범한 정적 파일이며, 그대로 다른 서버로 옮길 수 있습니다.
+
+[build]
+  command = "npm run build:preview"
+  publish = "dist-preview"
+
+[build.environment]
+  NODE_VERSION = "22"
+  # Playwright 브라우저는 미리보기 배포에 필요 없습니다.
+  PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD = "1"
+
+# 배포 미리보기(PR)와 브랜치 배포에도 같은 명령을 씁니다.
+[context.deploy-preview]
+  command = "npm run build:preview"
+
+[context.branch-deploy]
+  command = "npm run build:preview"
+
+# ---------------------------------------------------------------------------
+# 개발·검토용 표시: 검색엔진 수집 차단
+# (화면 배너와 <meta name="robots"> 는 preview 빌드 자체에 포함됩니다)
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Robots-Tag = "noindex, nofollow, noarchive"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Content-Security-Policy = "frame-ancestors 'none'"
+
+# ---------------------------------------------------------------------------
+# 캐시 — 충주시 공식 서버 권고(docs/vendor-handoff-guide.md)와 동일한 기준
+# ---------------------------------------------------------------------------
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"

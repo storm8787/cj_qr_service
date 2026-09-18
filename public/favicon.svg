@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="충주시 민원안내">
+  <rect width="32" height="32" rx="6" fill="#14532d" />
+  <path
+    d="M9 11h14M9 16h14M9 21h9"
+    fill="none"
+    stroke="#ffffff"
+    stroke-width="2.5"
+    stroke-linecap="round"
+  />
+</svg>

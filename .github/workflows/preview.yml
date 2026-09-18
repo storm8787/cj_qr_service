@@ -1,0 +1,71 @@
+name: 개발·검토용 미리보기 배포
+
+# GitHub Pages 는 콘텐츠 검토용 미리보기입니다. 최종 운영 환경이 아닙니다.
+# 시민에게 배포할 QR을 이 주소로 만들지 마세요.
+
+on:
+  push:
+    # 기본 브랜치가 main 이 아닐 수 있으므로 작업 브랜치도 함께 받는다.
+    branches: [main, 'claude/**']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: 빌드 및 검증
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: 타입 검사
+        run: npm run typecheck
+
+      - name: 단위 테스트
+        run: npm test
+
+      - name: 개발·검토용 빌드
+        run: npm run build:preview
+
+      - name: 공식 배포본 빌드 및 자동검증
+        run: npm run build:official
+
+      - name: 전달용 ZIP 생성
+        run: node scripts/package-official.mjs
+
+      - name: 전달용 ZIP 아티팩트 업로드
+        uses: actions/upload-artifact@v4
+        with:
+          name: chungju-minwon-guide-official
+          path: release/chungju-minwon-guide.zip
+          retention-days: 30
+
+      - name: Pages 아티팩트 업로드
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist-preview
+
+  deploy:
+    name: GitHub Pages 배포 (검토용)
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,39 @@
+{
+  "notice": "민원실 위치·운영시간·전화번호는 충주시 공식 자료로 확인한 뒤 채워야 하는 항목입니다. 아래 내용은 화면 구조를 보여 주기 위한 시범 데이터이며, 실제 값은 비어 있습니다.",
+  "updatedAt": "2026-09-18",
+  "items": [
+    {
+      "id": "city-hall-civil-affairs",
+      "name": "충주시청 민원실",
+      "address": "",
+      "hours": [],
+      "phone": "",
+      "note": "주소·운영시간·전화번호를 충주시 공식 홈페이지 자료로 확인한 뒤 입력해야 합니다. 확인 전까지 화면에 값을 표시하지 않습니다.",
+      "sourceUrl": "",
+      "verifiedAt": "",
+      "reviewStatus": "review-needed"
+    },
+    {
+      "id": "eup-myeon-dong-centers",
+      "name": "읍·면·동 행정복지센터",
+      "address": "",
+      "hours": [],
+      "phone": "",
+      "note": "충주시 각 읍·면·동 행정복지센터 목록과 연락처를 공식 자료로 확인한 뒤 입력해야 합니다.",
+      "sourceUrl": "",
+      "verifiedAt": "",
+      "reviewStatus": "review-needed"
+    },
+    {
+      "id": "government-call-center",
+      "name": "정부민원안내 콜센터 110",
+      "address": "",
+      "hours": [],
+      "phone": "110",
+      "note": "민원 종류를 모를 때 안내받을 수 있는 정부 통합 민원 상담 번호입니다. 운영시간은 안내받을 때 확인해 주세요.",
+      "sourceUrl": "https://www.gov.kr/",
+      "verifiedAt": "2026-09-18",
+      "reviewStatus": "approved"
+    }
+  ]
+}
