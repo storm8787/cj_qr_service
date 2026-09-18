@@ -24,6 +24,7 @@ const MIME = {
   '.svg': 'image/svg+xml',
   '.txt': 'text/plain; charset=utf-8',
   '.map': 'application/json; charset=utf-8',
+  '.hwpx': 'application/vnd.hancom.hwpx',
 };
 
 const server = createServer((req, res) => {

@@ -1,4 +1,5 @@
 import { el, externalLink } from '../lib/dom.ts';
+import { relatedFormsSection } from './forms.ts';
 import { searchMinwon } from '../lib/minwon-search.ts';
 import { navigate, routeToHash } from '../lib/router.ts';
 import type { MinwonDataset, MinwonItem } from '../types/index.ts';
@@ -240,6 +241,8 @@ export function renderDetail(
         ]),
       ]),
     ]),
+
+    relatedFormsSection(item.id),
 
     el('div', { class: 'card' }, [el('h2', {}, ['공식 안내']), ...actions]),
 

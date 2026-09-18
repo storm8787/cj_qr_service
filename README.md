@@ -18,6 +18,7 @@
 | 첫 화면 | 통합검색, 음성검색(지원 브라우저), 자주 찾는 민원, 분야별 민원, 도움 기능, 공식 사이트 연결 |
 | 민원 검색 | 민원명·별칭·관련 키워드 검색. 결과 없음/짧은 검색어 안내 |
 | 민원 상세 | 준비서류, 수수료, 처리기간, 신청 자격, 담당 창구, 공식 안내 링크, 출처·최종 확인일·검토상태 |
+| 민원서식 안내 | 신청서 기재 항목 미리보기 + 법령 별지서식 원본(HWPX) 내려받기 |
 | 행정용어 찾기 | 어려운 행정용어 설명 (근거를 확인한 것만 게시) |
 | 주소·지번 검색 | 지역명 + 숫자 AND 검색, 본번/부번 구조 분리 |
 | 면적 환산 | ㎡ ↔ 평 (1평 = 3.305785㎡) |
@@ -65,6 +66,7 @@ Node 20 이상이 필요합니다(개발 환경에만 필요, 운영 서버에�
 │   ├── types/
 │   └── main.ts
 ├── public/
+│   ├── forms/*.hwpx              # 법령 별지서식 원본
 │   ├── data/address-index.json   # 생성물 (git 에 올리지 않음)
 │   ├── favicon.svg
 │   └── robots.txt
@@ -94,6 +96,7 @@ Node 20 이상이 필요합니다(개발 환경에만 필요, 운영 서버에�
 | --- | --- |
 | `src/data/minwon-items.json` | 민원 목록 |
 | `src/data/terms.json` | 행정용어 |
+| `src/data/forms.json` | 민원서식 (기재 항목·유의사항·수수료) |
 | `src/data/offices.json` | 민원실 안내 |
 | `src/data/official-links.json` | 공식 사이트 링크 |
 
@@ -147,6 +150,53 @@ npm test
 공식 배포본에는 `approved` 콘텐츠만 포함됩니다.
 
 자세한 검토 절차는 [`docs/content-review-checklist.md`](docs/content-review-checklist.md) 를 참고하세요.
+
+## 민원서식 추가·교체 방법
+
+서식 파일은 **법령의 별지서식 원본(HWPX)** 입니다.
+별지서식은 법령의 일부라 저작권법 제7조에 따라 보호 대상에서 제외되므로 그대로 실을 수 있습니다.
+
+1. 국가법령정보센터에서 최신 별지서식(HWPX)을 내려받아 `public/forms/` 에 넣습니다.
+   파일명은 소문자·하이픈만 씁니다 (`^forms/[a-z0-9-]+\.hwpx$` 를 검증합니다).
+2. `src/data/forms.json` 에 항목을 추가합니다.
+
+   ```jsonc
+   {
+     "id": "jeonip-singo",
+     "title": "전입신고서 (세대 모두 이동)",
+     "law": "주민등록법 시행령",          // approved 이면 필수
+     "formNumber": "별지 제15호서식",      // approved 이면 필수
+     "revisedAt": "2024-12-03",           // 서식 첫 줄의 <개정 …> 을 그대로
+     "lawUrl": "https://www.law.go.kr/법령/주민등록법시행령",
+     "file": "forms/jeonip-singoseo.hwpx",
+     "fileSizeBytes": 76043,              // 실제 파일 크기와 일치해야 함
+     "pageCount": 2,
+     "sections": [ { "title": "…", "fields": ["…"] } ],
+     "notices": ["…"],                    // 서식에 적힌 유의사항
+     "feeExemptions": [],
+     "fee": "",                           // 서식에 적혀 있으면 그대로
+     "processingTime": "",
+     "relatedMinwonIds": ["moving-report"],
+     "verifiedAt": "2026-09-18",
+     "reviewStatus": "approved"
+   }
+   ```
+
+3. 검증합니다. 파일 누락·크기 불일치·존재하지 않는 `relatedMinwonIds` 는 **빌드를 실패시킵니다.**
+
+   ```bash
+   node scripts/validate-content.mjs --strict
+   npm test
+   ```
+
+서식 안의 기재 항목은 HWPX 를 풀어서 읽을 수 있습니다 (ZIP + XML 구조).
+
+```bash
+unzip -p public/forms/<파일>.hwpx Contents/section0.xml \
+  | grep -o '<hp:t>[^<]*</hp:t>' | sed 's/<[^>]*>//g'
+```
+
+> 서식은 개정됩니다. 교체할 때 `revisedAt` 과 `verifiedAt` 을 함께 갱신해 주세요.
 
 ## 주소 데이터 교체방법
 

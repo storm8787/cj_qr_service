@@ -13,7 +13,7 @@
  * - 절대경로(/assets/...)로 시작하는 자원 참조
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
-import { dirname, extname, join, relative, resolve } from 'node:path';
+import { dirname, extname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const projectRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -154,6 +154,26 @@ function checkPreviewOnlyFiles() {
   }
 }
 
+/** approved 서식의 HWPX 파일이 배포본에 실제로 들어갔는지 확인한다. */
+function checkFormFiles() {
+  const data = JSON.parse(readFileSync(resolve(projectRoot, 'src/data/forms.json'), 'utf8'));
+  const present = new Set(listFiles(distDir).map((f) => relative(distDir, f).split(sep).join('/')));
+
+  for (const form of data.items) {
+    if (form.reviewStatus !== 'approved') {
+      if (present.has(form.file)) {
+        failures.push(`미승인 서식 파일이 배포본에 포함되어 있습니다: ${form.file}`);
+      }
+      continue;
+    }
+    if (!present.has(form.file)) {
+      failures.push(`approved 서식 파일이 배포본에 없습니다: ${form.file}`);
+    }
+  }
+  const approved = data.items.filter((f) => f.reviewStatus === 'approved').length;
+  notes.push(`민원서식 ${approved}건의 파일이 배포본에 포함되었습니다.`);
+}
+
 function checkRobots() {
   const files = listFiles(distDir).map((f) => relative(distDir, f));
   if (files.includes('robots.txt')) {
@@ -177,6 +197,7 @@ function main() {
   checkIndexHtml();
   checkUnapprovedContent();
   checkPreviewOnlyFiles();
+  checkFormFiles();
   checkRobots();
 
   console.log(`공식 빌드 검증 대상: ${files.length}개 파일 (${relative(projectRoot, distDir)})`);

@@ -98,6 +98,48 @@ export interface OfficeItem {
   reviewStatus: ReviewStatus;
 }
 
+/** 서식의 기재 항목 묶음. */
+export interface FormSection {
+  title: string;
+  fields: string[];
+}
+
+/**
+ * 민원서식 1건.
+ *
+ * 법령의 별지서식 원본(HWPX)과, 그 안에서 읽어 낸 기재 항목·유의사항을 함께 담는다.
+ * 별지서식은 법령의 일부이므로 근거 법령·별지 번호·개정일이 곧 출처다.
+ */
+export interface MinwonForm {
+  id: string;
+  title: string;
+  /** 근거 법령 (예: 주민등록법 시행규칙) */
+  law: string;
+  /** 별지 번호 (예: 별지 제7호서식) */
+  formNumber: string;
+  /** 서식 개정일 (YYYY-MM-DD) */
+  revisedAt: string;
+  /** 국가법령정보센터 법령 페이지 */
+  lawUrl: string;
+  /** 앱 루트 기준 상대경로 (예: forms/xxx.hwpx) */
+  file: string;
+  fileSizeBytes: number;
+  pageCount: number;
+  summary: string;
+  sections: FormSection[];
+  /** 서식에 적힌 유의사항 */
+  notices: string[];
+  /** 수수료 면제 대상 (서식에 적힌 경우) */
+  feeExemptions: string[];
+  /** 서식에 수수료가 적혀 있으면 그 내용 */
+  fee: string;
+  /** 서식에 처리기간이 적혀 있으면 그 내용 */
+  processingTime: string;
+  relatedMinwonIds: string[];
+  verifiedAt: string;
+  reviewStatus: ReviewStatus;
+}
+
 /** 외부 공식 사이트 링크. */
 export interface OfficialLink {
   id: string;

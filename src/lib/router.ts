@@ -11,6 +11,8 @@ export type Route =
   | { name: 'detail'; id: string }
   | { name: 'category'; category: string }
   | { name: 'terms'; query: string }
+  | { name: 'forms' }
+  | { name: 'form'; id: string }
   | { name: 'address' }
   | { name: 'area' }
   | { name: 'office' };
@@ -35,6 +37,8 @@ export function parseRoute(hash: string): Route {
         : { name: 'home' };
     case 'terms':
       return { name: 'terms', query: params.get('q') ?? '' };
+    case 'forms':
+      return second ? { name: 'form', id: decodeURIComponent(second) } : { name: 'forms' };
     case 'address':
       return { name: 'address' };
     case 'area':
@@ -58,6 +62,10 @@ export function routeToHash(route: Route): string {
       return `#/category/${encodeURIComponent(route.category)}`;
     case 'terms':
       return route.query ? `#/terms?q=${encodeURIComponent(route.query)}` : '#/terms';
+    case 'forms':
+      return '#/forms';
+    case 'form':
+      return `#/forms/${encodeURIComponent(route.id)}`;
     case 'address':
       return '#/address';
     case 'area':
